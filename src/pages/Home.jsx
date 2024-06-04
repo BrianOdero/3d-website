@@ -6,6 +6,7 @@ import Sky from '../models/sky';
 import Bird from '../models/bird';
 import Plane from '../models/plane';
 import { Camera } from 'three';
+import HomeInfo from '../components/HomeInfo';
 
 const Home = () => {
 
@@ -51,8 +52,21 @@ const Home = () => {
 
 
   return (
-    //editing the first index of position moves the sum
+    
     <section className='w-full h-screen relative'>
+
+    <div className='absolute top-28 left-0 right-0 z-10 flex items-center justify-center' >
+      {currentStage && <HomeInfo currentStage={currentStage}/>}
+    </div>
+
+
+
+
+
+
+
+
+
       <Canvas camera={{near: 0.1, far: 1000}}
        className={`w-full h-screen bg-transparent ${isRotating ? 'cursor-grabbing' : 'cursor-grab'}`}
        >
