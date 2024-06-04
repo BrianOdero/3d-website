@@ -11,6 +11,8 @@ const Home = () => {
 
   const[isRotating, setIsRotating] = useState(false);
 
+  const [currentStage,setCurrentStage] = useState(1);
+
 
 //we would want to make this website fitr well on all devices
   const adjustIslandForScreenSize = () => {
@@ -68,12 +70,14 @@ const Home = () => {
             rotation={islandRotation}
             isRotating={isRotating}
             setIsRotating={setIsRotating}
+            setCurrentStage={setCurrentStage}
           />
           <Plane
             planeScale={planeScale}
             planePosition={planePosition}
             isRotating={isRotating}
             rotation={[0,20,0]}
+            
           />
 
         </Suspense>
