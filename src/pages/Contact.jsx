@@ -1,10 +1,14 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import {useState} from 'react'
 import emailjs from '@emailjs/browser'
+import { Canvas } from '@react-three/fiber'
+import fox, { Fox } from '../models/fox'
+import Loader from '../components/Loader'
 
 const Contact = () => {
   //useState from all variables
   const [IsLoading, setIsLoading] = useState(false)
+  const [CurrentAnimation, setCurrentAnimation] = useState('idle')
   const [form, setForm] = useState({name: '',email: '',message: ''});
 
   //handling the variable changes 
@@ -15,7 +19,9 @@ const Contact = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsLoading(true);
-
+    setCurrentAnimation('hit');
+    
+    //email API
     emailjs.send(
       'service_kelthtc',
       'template_kopv9x8',
@@ -30,18 +36,23 @@ const Contact = () => {
     ).then(() => {
       setIsLoading(false);
       //clearing all the form conttent 
-      setForm({name: '', email: '', message: ''});
-  
+
+      setTimeout(() => {
+        setCurrentAnimation('idle');
+        setForm({name: '', email: '', message: ''});
+        }, [1000]);
+    
     }).catch((error) => {
       setIsLoading(false);
       console.log(error);
+      setCurrentAnimation('sad');
   
     });
   };
 
-  //handles fox movement on focusing on the input field 
-  const handleFocus = () => {};
-  const handleBlur = () => {};
+  //handles fox movement on focusing on the input field(additional animations)
+  const handleFocus = () => setCurrentAnimation('walk');
+  const handleBlur = () => setCurrentAnimation('idle');
 
   
   
@@ -105,10 +116,23 @@ const Contact = () => {
           >
             {IsLoading? 'Sending......' : 'Press to send message'}
           </button>
-
-  
-
         </form>
+      </div>
+      
+      <div className='lg:w-1/2 w-full lg:h-auto md:h-[550px] h-[350px]'>
+        <Canvas camera={{position: [0,0,5],fov: 75,near:0.1,far:1000}}>
+            <directionalLight intensity={2.5} position={[0,0,1]}/>
+            <Suspense fallback={<Loader/>}>
+            <ambientLight intensity={0.5}/>
+            
+              <Fox
+                currentAnimation={CurrentAnimation}
+                position={[0.5,0.35,0]}
+                rotation={[12.6,-0.6,0]} 
+                scale={[0.5,0.5,0.5]}/>
+
+            </Suspense>
+        </Canvas>
       </div>
 
     </section>
