@@ -4,12 +4,15 @@ import emailjs from '@emailjs/browser'
 import { Canvas } from '@react-three/fiber'
 import fox, { Fox } from '../models/fox'
 import Loader from '../components/Loader'
+import useAlert from '../hooks/useAlert'
+import Alert from '../components/alert'
 
 const Contact = () => {
   //useState from all variables
   const [IsLoading, setIsLoading] = useState(false)
   const [CurrentAnimation, setCurrentAnimation] = useState('idle')
   const [form, setForm] = useState({name: '',email: '',message: ''});
+  
 
   //handling the variable changes 
   const handleChange = (e) => {
@@ -20,7 +23,7 @@ const Contact = () => {
     e.preventDefault();
     setIsLoading(true);
     setCurrentAnimation('hit');
-    
+
     //email API
     emailjs.send(
       'service_kelthtc',
@@ -35,17 +38,20 @@ const Contact = () => {
       'dbL95hzuGrogAxStW'
     ).then(() => {
       setIsLoading(false);
-      //clearing all the form conttent 
+      //showing success alert
+      Success();
+      setForm({name: '', email: '',message: ''})
 
       setTimeout(() => {
+        //set the animation to idle after a while
         setCurrentAnimation('idle');
-        setForm({name: '', email: '', message: ''});
         }, [1000]);
     
     }).catch((error) => {
       setIsLoading(false);
       console.log(error);
       setCurrentAnimation('sad');
+      failed();
   
     });
   };
@@ -54,6 +60,14 @@ const Contact = () => {
   const handleFocus = () => setCurrentAnimation('walk');
   const handleBlur = () => setCurrentAnimation('idle');
 
+
+  function Success(){
+    alert("You have successfully sent the email")
+  }
+  function failed(){
+    alert("Failed to send the email. Please try again")
+  }
+
   
   
 
@@ -61,6 +75,9 @@ const Contact = () => {
 
   return (
     <section className='relative flex lg:flex-row flex-col max-container'>
+      
+    
+
       <div className='flex-1 min-w-[50%] flex flex-col'>
         <h1 className='head-text'>GET IN TOUCH</h1>
 
@@ -104,8 +121,8 @@ const Contact = () => {
               required
               value={form.message}
               onChange={handleChange}
-              onFocus={handleFocus}
-              onBlur={handleBlur}
+              onFocus={handleFocus}//will be triggered when i focus on the specified input field
+              onBlur={handleBlur}//will be triggered when i loose focus on the input
             />
           </label>
 
